@@ -1,12 +1,20 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Ledger {
     // Create a scanner object for user input
     static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("Welcome to Ledger");
         homeScreen();
+        //bufferedWriter.close();
+        //scanner.close();
     }
 
     public static void homeScreen() {
@@ -20,7 +28,8 @@ public class Ledger {
         scanner.nextLine(); // Consume the newline
 
         if (choice == 1) {
-            //addDeposit();
+            writeToCSV(addDeposit());
+            homeScreen();
         } else if (choice == 2) {
             //makePayment();
         } else if (choice==3) {
@@ -88,8 +97,32 @@ public class Ledger {
         }
     }
 
-    public static void addDeposit() {
+    public static String addDeposit() {
+        System.out.println("Please enter the deposit information");
+        System.out.print("Describe the deposit : ");
+        String description = scanner.nextLine();
+        System.out.print("Who is the vendor : ");
+        String vendor = scanner.nextLine();
+        System.out.print("Deposit amount : ");
+        double amount = scanner.nextDouble();
+        scanner.nextLine();
 
+        return (description+"|"+vendor+"|"+amount);
+    }
+
+    public static void writeToCSV(String action) {
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
+
+            LocalDate date = LocalDate.now();
+            LocalTime time = LocalTime.now();
+
+            bufferedWriter.write(date+"|"+time.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+"|"+action+"\n");
+            bufferedWriter.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
