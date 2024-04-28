@@ -13,8 +13,8 @@ public class Ledger {
     public static void main(String[] args) throws IOException {
         System.out.println("Welcome to Ledger");
         homeScreen();
-        //bufferedWriter.close();
-        //scanner.close();
+
+        scanner.close();
     }
 
     public static void homeScreen() {
@@ -31,7 +31,8 @@ public class Ledger {
             writeToCSV(addDeposit());
             homeScreen();
         } else if (choice == 2) {
-            //makePayment();
+            writeToCSV(addPayment());
+            homeScreen();
         } else if (choice==3) {
             ledgerScreen();
         } else if (choice==4) {
@@ -97,7 +98,22 @@ public class Ledger {
         }
     }
 
+    public static String addPayment() {
+        // Prompt for payment information
+        System.out.println("Please enter the payment information");
+        System.out.print("Describe the purchased item : ");
+        String item = scanner.nextLine();
+        System.out.print("Name of vendor : ");
+        String vendor = scanner.nextLine();
+        System.out.print("Enter the cost of the item as a negative number : ");
+        double cost = scanner.nextDouble();
+        scanner.nextLine(); // Consume to newline
+        // Return string
+        return (item+"|"+vendor+"|"+cost);
+    }
+
     public static String addDeposit() {
+        // Prompt for deposit information
         System.out.println("Please enter the deposit information");
         System.out.print("Describe the deposit : ");
         String description = scanner.nextLine();
@@ -106,7 +122,7 @@ public class Ledger {
         System.out.print("Deposit amount : ");
         double amount = scanner.nextDouble();
         scanner.nextLine();
-
+        // Return the string
         return (description+"|"+vendor+"|"+amount);
     }
 
