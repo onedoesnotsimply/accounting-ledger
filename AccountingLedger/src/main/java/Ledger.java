@@ -10,6 +10,10 @@ public class Ledger {
     // Create buffered writer object to write to the csv file
     static BufferedWriter bufferedWriter;
     static BufferedReader bufferedReader;
+    // Create static variables for current date, month and year
+    static LocalDate currentDate = LocalDate.now();
+    static int currentMonth = currentDate.getMonthValue();
+    static int currentYear = currentDate.getYear();
 
     static {
         try {
@@ -102,13 +106,17 @@ public class Ledger {
             monthToDate();
             viewReports();
         } else if (choice==2) {
-            //previousMonth();
+            previousMonth();
+            viewReports();
         } else if (choice==3) {
             //yearToDate();
+            //viewReports();
         } else if (choice==4) {
             //previousYear();
+            //viewReports();
         } else if (choice==5) {
             //searchByVendor();
+            //viewReports();
         } else if (choice==6) {
             ledgerScreen();
         } else {
@@ -117,6 +125,7 @@ public class Ledger {
         }
     }
 
+    // Prompts for and creates a payment string
     public static String addPayment() {
         // Prompt for payment information
         System.out.println("Please enter the payment information");
@@ -131,6 +140,7 @@ public class Ledger {
         return (item+"|"+vendor+"|"+cost);
     }
 
+    // Prompts for and creates a deposit string
     public static String addDeposit() {
         // Prompt for deposit information
         System.out.println("Please enter the deposit information");
@@ -145,6 +155,7 @@ public class Ledger {
         return (description+"|"+vendor+"|"+amount);
     }
 
+    // Writes to the ledger.csv file
     public static void writeToCSV(String action) {
             // Get the local date and time
             LocalDate date = LocalDate.now();
@@ -160,6 +171,7 @@ public class Ledger {
         }
     }
 
+    // Displays all entries recorded in the ledger
     public static void allEntries() {
         // Prints all entries to the terminal
         String input;
@@ -172,6 +184,7 @@ public class Ledger {
         }
     }
 
+    // Displays all deposits recorded in the ledger
     public static void viewDeposits() {
         // Shows all deposits recorded in the ledger
         String input;
@@ -188,8 +201,9 @@ public class Ledger {
         }
     }
 
+    // Displays all payments recorded in the ledger
     public static void viewPayments() {
-        // Shows all payments recorded in the ledger
+
         String input;
         try {
             while ((input = bufferedReader.readLine()) != null) {
@@ -204,11 +218,9 @@ public class Ledger {
         }
     }
 
+    // Displays all entries from the current month
     public static void monthToDate() {
         String input;
-        LocalDate currentDate = LocalDate.now();
-        int currentMonth = currentDate.getMonthValue();
-        int currentYear = currentDate.getYear();
 
         try {
             while ((input = bufferedReader.readLine()) != null) {
@@ -221,6 +233,23 @@ public class Ledger {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // Displays all entries from the past month
+    public static void previousMonth() {
+        String input;
+        try {
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] tokens = input.split("\\|");
+                String[] date = tokens[0].split("-");
+                if (Double.parseDouble(date[1]) == currentMonth-1 && Integer.parseInt(date[0]) == currentYear) {
+                    System.out.println(input);
+                }
+            }
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
     }
 
 }
