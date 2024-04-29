@@ -53,6 +53,7 @@ public class Ledger {
             ledgerScreen();
         } else if (choice==4) {
             scanner.close();
+            return;
         } else {
             System.out.println("Invalid choice");
             homeScreen();
