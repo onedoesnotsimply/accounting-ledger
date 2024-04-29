@@ -24,7 +24,6 @@ public class Ledger {
     public static void main(String[] args) throws IOException {
         System.out.println("Welcome to Ledger");
         homeScreen();
-
     }
 
     public static void homeScreen() {
@@ -100,7 +99,8 @@ public class Ledger {
         scanner.nextLine();
 
         if (choice==1) {
-            //monthToDate();
+            monthToDate();
+            viewReports();
         } else if (choice==2) {
             //previousMonth();
         } else if (choice==3) {
@@ -199,6 +199,25 @@ public class Ledger {
                 }
             }
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void monthToDate() {
+        String input;
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
+
+        try {
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] tokens = input.split("\\|");
+                String[] date = tokens[0].split("-");
+                if (Double.parseDouble(date[1]) == currentMonth && Double.parseDouble(date[0]) == currentYear) {
+                    System.out.println(input);
+                }
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
