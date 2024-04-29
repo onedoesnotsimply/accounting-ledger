@@ -2,6 +2,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Ledger {
@@ -20,6 +22,9 @@ public class Ledger {
     static LocalDate currentDate = LocalDate.now();
     static int currentMonth = currentDate.getMonthValue();
     static int currentYear = currentDate.getYear();
+
+    // Create a static arraylist for sorting
+    static ArrayList<String> entries = new ArrayList<>();
 
 
     public static void main(String[] args) throws IOException {
@@ -178,9 +183,14 @@ public class Ledger {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
-                System.out.println(input);
+                // Add entry to entries ArrayList
+                entries.add(input);
             }
-        } catch (IOException e) {
+            sortArray(entries);
+            // Close bufferedReader
+            bufferedReader.close();
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -190,16 +200,20 @@ public class Ledger {
     public static void viewDeposits() {
         // Shows all deposits recorded in the ledger
         String input;
-
+        int i = 0;
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 if (Double.parseDouble(tokens[4]) > 0) {
-                    System.out.println(input);
+                    // Add entry to the arraylist
+                    entries.add(input);
                 }
             }
+            // Sort the array list
+            sortArray(entries);
 
+            bufferedReader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -214,9 +228,14 @@ public class Ledger {
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 if (Double.parseDouble(tokens[4]) < 0){
-                    System.out.println(input);
+                    // Add to entries
+                    entries.add(input);
                 }
             }
+            // Sort and print the entries
+            sortArray(entries);
+            // Close the reader
+            bufferedReader.close();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -233,12 +252,23 @@ public class Ledger {
                 String[] tokens = input.split("\\|");
                 String[] date = tokens[0].split("-");
                 if (Double.parseDouble(date[1]) == currentMonth && Double.parseDouble(date[0]) == currentYear) {
-                    System.out.println(input);
+                    entries.add(input);
                 }
             }
+            sortArray(entries);
+            bufferedReader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // Sorts, prints and clears the ArrayList
+    public static void sortArray(ArrayList<String> items){
+        Collections.reverse(items);
+        for (String entry : items){
+            System.out.println(entry);
+        }
+        items.clear();
     }
 
     // Displays all entries from the past month
@@ -250,9 +280,11 @@ public class Ledger {
                 String[] tokens = input.split("\\|");
                 String[] date = tokens[0].split("-");
                 if (Double.parseDouble(date[1]) == currentMonth-1 && Integer.parseInt(date[0]) == currentYear) {
-                    System.out.println(input);
+                    entries.add(input);
                 }
             }
+            sortArray(entries);
+            bufferedReader.close();
         }catch (IOException e){
             throw new RuntimeException(e);
         }
@@ -269,9 +301,11 @@ public class Ledger {
                 String[] tokens = input.split("\\|");
                 String[] date = tokens[0].split("-");
                 if (Integer.parseInt(date[0]) == currentYear) {
-                    System.out.println(input);
+                    entries.add(input);
                 }
             }
+            sortArray(entries);
+            bufferedReader.close();
         } catch (IOException e){
             throw new RuntimeException(e);
         }
@@ -287,9 +321,11 @@ public class Ledger {
                 String[] tokens = input.split("\\|");
                 String[] date = tokens[0].split("-");
                 if (Integer.parseInt(date[0]) == currentYear-1) {
-                    System.out.println(input);
+                    entries.add(input);
                 }
             }
+            sortArray(entries);
+            bufferedReader.close();
         } catch (IOException e){
             throw new RuntimeException(e);
         }
@@ -303,13 +339,16 @@ public class Ledger {
 
         String input;
         // Read and query the csv file for entries from that vendor
-        try (BufferedReader reader = new BufferedReader(new FileReader("ledger.csv"))) {
-            while ((input = reader.readLine()) != null) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
+            while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 if (tokens[3].equalsIgnoreCase(vendor)) {
-                    System.out.println(input);
+                    entries.add(input);
                 }
             }
+            sortArray(entries);
+            bufferedReader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
