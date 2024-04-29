@@ -1,6 +1,4 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -9,12 +7,24 @@ import java.util.Scanner;
 public class Ledger {
     // Create a scanner object for user input
     static Scanner scanner = new Scanner(System.in);
+    // Create buffered writer object to write to the csv file
+    static BufferedWriter bufferedWriter;
+    static BufferedReader bufferedReader;
+
+    static {
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
+            bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    // Create an arraylist for the
 
     public static void main(String[] args) throws IOException {
         System.out.println("Welcome to Ledger");
         homeScreen();
 
-        scanner.close();
     }
 
     public static void homeScreen() {
@@ -36,7 +46,13 @@ public class Ledger {
         } else if (choice==3) {
             ledgerScreen();
         } else if (choice==4) {
-            return;
+            try {
+                bufferedWriter.close();
+                bufferedReader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            scanner.close();
         } else {
             System.out.println("Invalid choice");
             homeScreen();
@@ -54,11 +70,14 @@ public class Ledger {
         scanner.nextLine();
 
         if (choice == 1) {
-            //allEntries();
+            allEntries();
+            ledgerScreen();
         } else if (choice == 2) {
-            //viewDeposits();
+            viewDeposits();
+            ledgerScreen();
         } else if (choice == 3) {
-            //viewPayments();
+            viewPayments();
+            ledgerScreen();
         } else if (choice == 4) {
             viewReports();
         } else if (choice == 5) {
@@ -127,14 +146,58 @@ public class Ledger {
     }
 
     public static void writeToCSV(String action) {
-        try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
-
+            // Get the local date and time
             LocalDate date = LocalDate.now();
             LocalTime time = LocalTime.now();
 
-            bufferedWriter.write(date+"|"+time.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+"|"+action+"\n");
-            bufferedWriter.close();
+            String entry = (date+"|"+time.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+"|"+action+"\n");
+
+        try {
+            // Write the date, time and action to the ledger.csv file
+            bufferedWriter.write(entry);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static void allEntries() {
+        // Prints all entries to the terminal
+        String input;
+        try {
+            while ((input = bufferedReader.readLine()) != null) {
+                System.out.println(input);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void viewDeposits() {
+        // Shows all deposits recorded in the ledger
+        String input;
+        try {
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] tokens = input.split("\\|");
+                if (Double.parseDouble(tokens[4]) > 0){
+                    System.out.println(input);
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void viewPayments() {
+        // Shows all payments recorded in the ledger
+        String input;
+        try {
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] tokens = input.split("\\|");
+                if (Double.parseDouble(tokens[4]) < 0){
+                    System.out.println(input);
+                }
+            }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
