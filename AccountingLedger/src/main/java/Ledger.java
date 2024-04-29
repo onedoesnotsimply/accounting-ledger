@@ -109,11 +109,11 @@ public class Ledger {
             previousMonth();
             viewReports();
         } else if (choice==3) {
-            //yearToDate();
-            //viewReports();
+            yearToDate();
+            viewReports();
         } else if (choice==4) {
-            //previousYear();
-            //viewReports();
+            previousYear();
+            viewReports();
         } else if (choice==5) {
             //searchByVendor();
             //viewReports();
@@ -250,6 +250,40 @@ public class Ledger {
             throw new RuntimeException(e);
         }
 
+    }
+
+    // Display all entries from the current year
+    public static void yearToDate() {
+        String input;
+
+        try {
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] tokens = input.split("\\|");
+                String[] date = tokens[0].split("-");
+                if (Integer.parseInt(date[0]) == currentYear) {
+                    System.out.println(input);
+                }
+            }
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Display all entries from the previous year
+    public static void previousYear() {
+        String input;
+
+        try {
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] tokens = input.split("\\|");
+                String[] date = tokens[0].split("-");
+                if (Integer.parseInt(date[0]) == currentYear-1) {
+                    System.out.println(input);
+                }
+            }
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
     }
 
 }
