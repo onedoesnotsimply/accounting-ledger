@@ -27,7 +27,7 @@ public class Ledger {
     static ArrayList<String> entries = new ArrayList<>();
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         System.out.println("Welcome to Ledger");
         homeScreen();
     }
@@ -200,7 +200,6 @@ public class Ledger {
     public static void viewDeposits() {
         // Shows all deposits recorded in the ledger
         String input;
-        int i = 0;
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
