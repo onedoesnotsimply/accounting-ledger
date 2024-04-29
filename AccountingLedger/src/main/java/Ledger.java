@@ -5,25 +5,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Ledger {
+
+    /*
+    Ledger allows users to keep record of financial transactions by
+    Allowing them to record deposits and payments and view a ledger of reports,
+    including all, monthly, yearly and a search by vendor option
+     */
+
+
     // Create a scanner object for user input
     static Scanner scanner = new Scanner(System.in);
-    // Create buffered writer object to write to the csv file
-    static BufferedWriter bufferedWriter;
-    static BufferedReader bufferedReader;
+
     // Create static variables for current date, month and year
     static LocalDate currentDate = LocalDate.now();
     static int currentMonth = currentDate.getMonthValue();
     static int currentYear = currentDate.getYear();
 
-    static {
-        try {
-            bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
-            bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    // Create an arraylist for the
 
     public static void main(String[] args) throws IOException {
         System.out.println("Welcome to Ledger");
@@ -47,14 +44,9 @@ public class Ledger {
             writeToCSV(addPayment());
             homeScreen();
         } else if (choice==3) {
+            System.out.println("Which Ledger would you like to see?");
             ledgerScreen();
         } else if (choice==4) {
-            try {
-                bufferedWriter.close();
-                bufferedReader.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
             scanner.close();
         } else {
             System.out.println("Invalid choice");
@@ -82,6 +74,7 @@ public class Ledger {
             viewPayments();
             ledgerScreen();
         } else if (choice == 4) {
+            System.out.println("Which report would you like to view?");
             viewReports();
         } else if (choice == 5) {
             homeScreen();
@@ -115,8 +108,8 @@ public class Ledger {
             previousYear();
             viewReports();
         } else if (choice==5) {
-            //searchByVendor();
-            //viewReports();
+            searchByVendor();
+            viewReports();
         } else if (choice==6) {
             ledgerScreen();
         } else {
@@ -135,6 +128,10 @@ public class Ledger {
         String vendor = scanner.nextLine();
         System.out.print("Enter the cost of the item as a negative number : ");
         double cost = scanner.nextDouble();
+        if (cost > 0) {
+            System.out.println("Invalid input, number should be negative");
+            homeScreen();
+        }
         scanner.nextLine(); // Consume to newline
         // Return string
         return (item+"|"+vendor+"|"+cost);
@@ -164,8 +161,11 @@ public class Ledger {
             String entry = (date+"|"+time.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+"|"+action+"\n");
 
         try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
             // Write the date, time and action to the ledger.csv file
             bufferedWriter.write(entry);
+
+            bufferedWriter.close();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -176,22 +176,26 @@ public class Ledger {
         // Prints all entries to the terminal
         String input;
         try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
                 System.out.println(input);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     // Displays all deposits recorded in the ledger
     public static void viewDeposits() {
         // Shows all deposits recorded in the ledger
         String input;
+
         try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
-                if (Double.parseDouble(tokens[4]) > 0){
+                if (Double.parseDouble(tokens[4]) > 0) {
                     System.out.println(input);
                 }
             }
@@ -206,6 +210,7 @@ public class Ledger {
 
         String input;
         try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 if (Double.parseDouble(tokens[4]) < 0){
@@ -223,6 +228,7 @@ public class Ledger {
         String input;
 
         try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 String[] date = tokens[0].split("-");
@@ -239,6 +245,7 @@ public class Ledger {
     public static void previousMonth() {
         String input;
         try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 String[] date = tokens[0].split("-");
@@ -257,6 +264,7 @@ public class Ledger {
         String input;
 
         try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 String[] date = tokens[0].split("-");
@@ -274,6 +282,7 @@ public class Ledger {
         String input;
 
         try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("ledger.csv"));
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 String[] date = tokens[0].split("-");
@@ -286,4 +295,23 @@ public class Ledger {
         }
     }
 
+    // Displays all entries from a specific vendor
+    public static void searchByVendor() {
+        // Prompt user for the name of the vendor
+        System.out.print("Please enter the name of the vendor : ");
+        String vendor = scanner.nextLine();
+
+        String input;
+        // Read and query the csv file for entries from that vendor
+        try (BufferedReader reader = new BufferedReader(new FileReader("ledger.csv"))) {
+            while ((input = reader.readLine()) != null) {
+                String[] tokens = input.split("\\|");
+                if (tokens[3].equalsIgnoreCase(vendor)) {
+                    System.out.println(input);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
