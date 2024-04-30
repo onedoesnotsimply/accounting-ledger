@@ -71,12 +71,15 @@ public class Ledger {
         scanner.nextLine();
 
         if (choice == 1) {
+            System.out.println("All entries");
             allEntries();
             ledgerScreen();
         } else if (choice == 2) {
+            System.out.println("All deposits");
             viewDeposits();
             ledgerScreen();
         } else if (choice == 3) {
+            System.out.println("All payments");
             viewPayments();
             ledgerScreen();
         } else if (choice == 4) {
@@ -102,15 +105,19 @@ public class Ledger {
         scanner.nextLine();
 
         if (choice==1) {
+            System.out.println("All entries from this month");
             monthToDate();
             viewReports();
         } else if (choice==2) {
+            System.out.println("All entries from last month");
             previousMonth();
             viewReports();
         } else if (choice==3) {
+            System.out.println("All entries from this year");
             yearToDate();
             viewReports();
         } else if (choice==4) {
+            System.out.println("All entries from last year");
             previousYear();
             viewReports();
         } else if (choice==5) {
@@ -352,6 +359,7 @@ public class Ledger {
                     entries.add(input);
                 }
             }
+            System.out.println("All entries from "+vendor);
             sortArray(entries);
             bufferedReader.close();
         } catch (IOException e) {
