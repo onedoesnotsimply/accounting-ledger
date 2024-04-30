@@ -135,7 +135,7 @@ public class Ledger {
         System.out.print("Enter the cost of the item as a negative number : ");
         double cost = scanner.nextDouble();
         if (cost > 0) {
-            System.out.println("Invalid input, number should be negative");
+            System.out.println("Invalid input\nAmount must be negative");
             homeScreen();
         }
         scanner.nextLine(); // Consume to newline
@@ -153,6 +153,10 @@ public class Ledger {
         String vendor = scanner.nextLine();
         System.out.print("Deposit amount : ");
         double amount = scanner.nextDouble();
+        if (amount < 0) {
+            System.out.println("Invalid input\nAmount must be greater than zero");
+            homeScreen();
+        }
         scanner.nextLine();
         // Return the string
         return (description+"|"+vendor+"|"+amount);
@@ -170,6 +174,7 @@ public class Ledger {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("ledger.csv", true));
             // Write the date, time and action to the ledger.csv file
             bufferedWriter.write(entry);
+            System.out.println("Entry recorded");
 
             bufferedWriter.close();
         } catch (IOException ex) {
