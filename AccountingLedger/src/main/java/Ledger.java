@@ -23,7 +23,7 @@ public class Ledger {
     static int currentMonth = currentDate.getMonthValue();
     static int currentYear = currentDate.getYear();
 
-    // Create a static arraylist for sorting
+    // Create a static ArrayList for sorting
     static ArrayList<String> entries = new ArrayList<>();
 
 
@@ -53,7 +53,7 @@ public class Ledger {
             ledgerScreen();
         } else if (choice==4) {
             scanner.close();
-            return;
+            System.exit(0);
         } else {
             System.out.println("Invalid choice");
             homeScreen();
@@ -280,6 +280,7 @@ public class Ledger {
         for (String entry : items){
             System.out.println(entry);
         }
+        System.out.println(" ");
         items.clear();
     }
 
